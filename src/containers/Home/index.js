@@ -11,12 +11,16 @@ import type { Home as HomeType, Dispatch, Reducer } from '../../types';
 import UserList from '../../components/UserList';
 import styles from './styles.scss';
 
+import { Toggle } from '../../components/Switch';
+
 type Props = { home: HomeType, fetchUsersIfNeeded: () => void };
 
 // Export this for unit testing more easily
 export class Home extends PureComponent<Props> {
   componentDidMount() {
     this.props.fetchUsersIfNeeded();
+
+    this.state = {};
   }
 
   renderUserList = (): Element<'p' | typeof UserList> => {
@@ -41,7 +45,11 @@ export class Home extends PureComponent<Props> {
     return (
       <div className={styles.Home}>
         <Helmet title="Home" />
-        {this.renderUserList()}
+        <Toggle onToggle={on => console.log('toggle', on)}>
+          <Toggle.On>This button is on</Toggle.On>
+          <Toggle.Off>This button is off</Toggle.Off>
+          <Toggle.Button />
+        </Toggle>
       </div>
     );
   }
