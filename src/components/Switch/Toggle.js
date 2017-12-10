@@ -7,33 +7,7 @@ const childContextTypes = {
   [TOGGLE_CONTEXT]: PropTyps.object.isRequired
 };
 
-function ToggleOn({ children }, context) {
-  return context[TOGGLE_CONTEXT].on ? children : null;
-}
-
-ToggleOn.contextTypes = childContextTypes;
-
-function ToggleOff({ children }, context) {
-  return !context[TOGGLE_CONTEXT].on ? children : null;
-}
-
-ToggleOff.contextTypes = childContextTypes;
-
-/* eslint-disable react/prop-types */
-
-function ToggleButton(props, context) {
-  return (
-    <Switch
-      on={context[TOGGLE_CONTEXT].on}
-      onSwitch={context[TOGGLE_CONTEXT].onToggle}
-      {...props}
-    />
-  );
-}
-
-ToggleButton.contextTypes = childContextTypes;
-
-const withToggle = function(Component) {
+function withToggle(Component) {
   function withToggleWrapper(props, context) {
     const toggleContext = context[TOGGLE_CONTEXT];
     return (
@@ -48,7 +22,17 @@ const withToggle = function(Component) {
   withToggleWrapper.contextTypes = childContextTypes;
 
   return withToggleWrapper;
-};
+}
+
+const ToggleOn = withToggle(({ on, children }) => (on ? children : null));
+
+const ToggleOff = withToggle(({ on, children }) => (!on ? children : null));
+
+/* eslint-disable react/prop-types */
+
+const ToggleButton = withToggle(({ on, onToggle, ...props }) => (
+  <Switch on={on} onSwitch={onToggle} {...props} />
+));
 
 /* eslint-enable */
 
