@@ -47,8 +47,11 @@ export class Home extends PureComponent<Props> {
         <Helmet title="Home" />
         <Toggle onToggle={on => console.log('toggle', on)}>
           <Toggle.On>This button is on</Toggle.On>
+          <div>
+            <b>Click this button to toggle stuff</b>
+            <Toggle.Button />
+          </div>
           <Toggle.Off>This button is off</Toggle.Off>
-          <Toggle.Button />
         </Toggle>
       </div>
     );

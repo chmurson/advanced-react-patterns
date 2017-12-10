@@ -2,19 +2,36 @@ import React from 'react';
 import PropTyps from 'prop-types';
 import { Switch } from './Switch';
 
-function ToggleOn({ on, children }) {
-  return on ? children : null;
+const TOGGLE_CONTEXT = '__toggle__';
+const childContextTypes = {
+  [TOGGLE_CONTEXT]: PropTyps.object.isRequired
+};
+
+function ToggleOn({ children }, context) {
+  return context[TOGGLE_CONTEXT].on ? children : null;
 }
 
-function ToggleOff({ on, children }) {
-  return !on ? children : null;
+ToggleOn.contextTypes = childContextTypes;
+
+function ToggleOff({ children }, context) {
+  return !context[TOGGLE_CONTEXT].on ? children : null;
 }
+
+ToggleOff.contextTypes = childContextTypes;
 
 /* eslint-disable react/prop-types */
 
-function ToggleButton({ on, onToggle, ...props }) {
-  return <Switch on={on} onSwitch={onToggle} {...props} />;
+function ToggleButton(props, context) {
+  return (
+    <Switch
+      on={context[TOGGLE_CONTEXT].on}
+      onSwitch={context[TOGGLE_CONTEXT].onToggle}
+      {...props}
+    />
+  );
 }
+
+ToggleButton.contextTypes = childContextTypes;
 
 /* eslint-enable */
 
@@ -22,6 +39,8 @@ export class Toggle extends React.Component {
   static On = ToggleOn;
   static Off = ToggleOff;
   static Button = ToggleButton;
+
+  static childContextTypes = childContextTypes;
 
   static propTypes = {
     onToggle: PropTyps.func,
@@ -40,6 +59,15 @@ export class Toggle extends React.Component {
     };
   }
 
+  getChildContext() {
+    return {
+      [TOGGLE_CONTEXT]: {
+        on: this.state.on,
+        onToggle: this.onSwitch
+      }
+    };
+  }
+
   onSwitch = () =>
     this.setState(
       prevState => ({ on: !prevState.on }),
@@ -47,12 +75,6 @@ export class Toggle extends React.Component {
     );
 
   render() {
-    const children = React.Children.map(this.props.children, child =>
-      React.cloneElement(child, {
-        on: this.state.on,
-        onToggle: this.onSwitch
-      })
-    );
-    return <div>{children}</div>;
+    return <div>{this.props.children}</div>;
   }
 }
