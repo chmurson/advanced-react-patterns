@@ -24,6 +24,12 @@ export class Home extends PureComponent<Props> {
     this.state = {};
   }
 
+  setUpAnotherToggleRef = ref => {
+    this.myToggle = ref;
+  };
+
+  myToggle = null;
+
   renderUserList = (): Element<'p' | typeof UserList> => {
     const { home } = this.props;
 
@@ -46,14 +52,21 @@ export class Home extends PureComponent<Props> {
     return (
       <div className={styles.Home}>
         <Helmet title="Home" />
-        <Toggle onToggle={on => console.log('toggle', on)}>
+        <Toggle
+          onToggle={on => {
+            if (on) {
+              this.myToggle.focus();
+            }
+            console.log(this.myToggle);
+          }}
+        >
           <Toggle.On>This button is on</Toggle.On>
           <Toggle.Off>This button is off</Toggle.Off>
           <hr />
           <div style={{ padding: 20, backgroundColor: 'black' }}>
             <b>Click this button to toggle stuff</b>
             <Toggle.Button />
-            <AnotherToggle />
+            <AnotherToggle innerRef={this.setUpAnotherToggleRef} />
           </div>
         </Toggle>
       </div>
@@ -61,19 +74,27 @@ export class Home extends PureComponent<Props> {
   }
 }
 
-function AnotherButton({ toggle: { on, onToggle } }) {
-  const style = {
-    borderRadius: 15,
-    fontSize: 30,
-    backgroundColor: 'red',
-    borderColor: 'red'
-  };
-  return (
-    <button style={style} onClick={onToggle}>
-      {on ? 'I AM ON! :D' : 'I AM OFF :C'}
-    </button>
-  );
+/*eslint-disable */
+class AnotherButton extends React.Component {
+  focus = () => this.button.focus();
+
+  render() {
+    const { on, onToggle } = this.props.toggle;
+    const style = {
+      borderRadius: 15,
+      fontSize: 30,
+      backgroundColor: 'red',
+      borderColor: 'red'
+    };
+    return (
+      <button style={style} onClick={onToggle} ref={ref => this.button = ref}>
+        {on ? 'I AM ON! :D' : 'I AM OFF :C'}
+      </button>
+    );
+  }
 }
+
+/* eslint-enable */
 
 AnotherButton.propTypes = {
   toggle: PropTypes.shape({

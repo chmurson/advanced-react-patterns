@@ -8,10 +8,18 @@ const childContextTypes = {
 };
 
 function withToggle(Component) {
-  function withToggleWrapper(props, context) {
+  const withToggleWrapper = ({ innerRef, ...props }, context) => {
     const toggleContext = context[TOGGLE_CONTEXT];
-    return <Component toggle={toggleContext} {...props} />;
-  }
+    return <Component toggle={toggleContext} ref={innerRef} {...props} />;
+  };
+
+  withToggleWrapper.propTypes = {
+    innerRef: PropTyps.func
+  };
+
+  withToggleWrapper.defaultProps = {
+    innerRef: null
+  };
 
   withToggleWrapper.contextTypes = childContextTypes;
 
