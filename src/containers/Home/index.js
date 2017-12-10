@@ -48,19 +48,20 @@ export class Home extends PureComponent<Props> {
         <Helmet title="Home" />
         <Toggle onToggle={on => console.log('toggle', on)}>
           <Toggle.On>This button is on</Toggle.On>
-          <div>
+          <Toggle.Off>This button is off</Toggle.Off>
+          <hr />
+          <div style={{ padding: 20, backgroundColor: 'black' }}>
             <b>Click this button to toggle stuff</b>
             <Toggle.Button />
             <AnotherToggle />
           </div>
-          <Toggle.Off>This button is off</Toggle.Off>
         </Toggle>
       </div>
     );
   }
 }
 
-function AnotherButton({ on, onToggle }) {
+function AnotherButton({ toggle: { on, onToggle } }) {
   const style = {
     borderRadius: 15,
     fontSize: 30,
@@ -75,8 +76,10 @@ function AnotherButton({ on, onToggle }) {
 }
 
 AnotherButton.propTypes = {
-  on: PropTypes.bool.isRequired,
-  onToggle: PropTypes.func.isRequired
+  toggle: PropTypes.shape({
+    on: PropTypes.bool.isRequired,
+    onToggle: PropTypes.func.isRequired
+  }).isRequired
 };
 
 const AnotherToggle = Toggle.withToggle(AnotherButton);

@@ -10,36 +10,33 @@ const childContextTypes = {
 function withToggle(Component) {
   function withToggleWrapper(props, context) {
     const toggleContext = context[TOGGLE_CONTEXT];
-    return (
-      <Component
-        on={toggleContext.on}
-        onToggle={toggleContext.onToggle}
-        {...props}
-      />
-    );
+    return <Component toggle={toggleContext} {...props} />;
   }
 
   withToggleWrapper.contextTypes = childContextTypes;
 
+  withToggleWrapper.displayName = `withToggleWrapper(${Component.displayName ||
+    Component.name})`;
+
   return withToggleWrapper;
 }
 
-const ToggleOn = withToggle(({ on, children }) => (on ? children : null));
+const ToggleOn = ({ toggle: { on }, children }) => (on ? children : null);
 
-const ToggleOff = withToggle(({ on, children }) => (!on ? children : null));
+const ToggleOff = ({ toggle: { on }, children }) => (!on ? children : null);
 
 /* eslint-disable react/prop-types */
 
-const ToggleButton = withToggle(({ on, onToggle, ...props }) => (
+const ToggleButton = ({ toggle: { on, onToggle }, ...props }) => (
   <Switch on={on} onSwitch={onToggle} {...props} />
-));
+);
 
 /* eslint-enable */
 
 export class Toggle extends React.Component {
-  static On = ToggleOn;
-  static Off = ToggleOff;
-  static Button = ToggleButton;
+  static On = withToggle(ToggleOn);
+  static Off = withToggle(ToggleOff);
+  static Button = withToggle(ToggleButton);
   static withToggle = withToggle;
 
   static childContextTypes = childContextTypes;
