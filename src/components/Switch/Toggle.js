@@ -33,12 +33,30 @@ function ToggleButton(props, context) {
 
 ToggleButton.contextTypes = childContextTypes;
 
+const withToggle = function(Component) {
+  function withToggleWrapper(props, context) {
+    const toggleContext = context[TOGGLE_CONTEXT];
+    return (
+      <Component
+        on={toggleContext.on}
+        onToggle={toggleContext.onToggle}
+        {...props}
+      />
+    );
+  }
+
+  withToggleWrapper.contextTypes = childContextTypes;
+
+  return withToggleWrapper;
+};
+
 /* eslint-enable */
 
 export class Toggle extends React.Component {
   static On = ToggleOn;
   static Off = ToggleOff;
   static Button = ToggleButton;
+  static withToggle = withToggle;
 
   static childContextTypes = childContextTypes;
 

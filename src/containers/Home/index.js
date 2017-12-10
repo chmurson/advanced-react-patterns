@@ -1,6 +1,7 @@
 /* @flow */
 
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import type { Element } from 'react';
 import { connect } from 'react-redux';
 import type { Connector } from 'react-redux';
@@ -50,6 +51,7 @@ export class Home extends PureComponent<Props> {
           <div>
             <b>Click this button to toggle stuff</b>
             <Toggle.Button />
+            <AnotherToggle />
           </div>
           <Toggle.Off>This button is off</Toggle.Off>
         </Toggle>
@@ -57,6 +59,27 @@ export class Home extends PureComponent<Props> {
     );
   }
 }
+
+function AnotherButton({ on, onToggle }) {
+  const style = {
+    borderRadius: 15,
+    fontSize: 30,
+    backgroundColor: 'red',
+    borderColor: 'red'
+  };
+  return (
+    <button style={style} onClick={onToggle}>
+      {on ? 'I AM ON! :D' : 'I AM OFF :C'}
+    </button>
+  );
+}
+
+AnotherButton.propTypes = {
+  on: PropTypes.bool.isRequired,
+  onToggle: PropTypes.func.isRequired
+};
+
+const AnotherToggle = Toggle.withToggle(AnotherButton);
 
 const connector: Connector<{}, Props> = connect(
   ({ home }: Reducer) => ({ home }),
